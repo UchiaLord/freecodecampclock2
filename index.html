@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pomodoro Clock</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #timer-label, #time-left {
+      font-size: 2rem;
+      margin: 10px 0;
+    }
+
+    #controls {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    button {
+      font-size: 1rem;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pomodoro Clock</h1>
+  <div id="timer-label">Session</div>
+  <div id="time-left">25:00</div>
+  <div id="controls">
+    <button id="start_stop" onclick="startStop()">Start/Stop</button>
+    <button id="reset" onclick="reset()">Reset</button>
+  </div>
+
+  <script>
+    let isRunning = false;
+    let timer;
+    let sessionLength = 25 * 60; // in seconds
+
+    function startStop() {
+      if (isRunning) {
+        clearInterval(timer);
+      } else {
+        timer = setInterval(updateTimer, 1000);
+      }
+      isRunning = !isRunning;
+    }
+
+    function reset() {
+      clearInterval(timer);
+      isRunning = false;
+      sessionLength = 25 * 60; // reset session length to 25 minutes
+      updateDisplay();
+    }
+
+    function updateTimer() {
+      if (sessionLength > 0) {
+        sessionLength -= 1;
+        updateDisplay();
+      } else {
+        // Timer reached 00:00
+        playSound();
+        switchTimer();
+      }
+    }
+
+    function updateDisplay() {
+      const minutes = Math.floor(sessionLength / 60);
+      const seconds = sessionLength % 60;
+      document.getElementById('timer-label').textContent = isRunning ? 'Session' : 'Break';
+      document.getElementById('time-left').textContent = `${formatTime(minutes)}:${formatTime(seconds)}`;
+    }
+
+    function formatTime(time) {
+      return time < 10 ? `0${time}` : `${time}`;
+    }
+
+    function switchTimer() {
+      if (isRunning) {
+        sessionLength = 5 * 60; // switch to break, set break length to 5 minutes
+      } else {
+        sessionLength = 25 * 60; // switch to session, set session length to 25 minutes
+      }
+      updateDisplay();
+    }
+
+    function playSound() {
+      // Implement sound playing logic (e.g., using an HTML5 audio element)
+    }
+
+    updateDisplay();  // Initial display setup
+  </script>
+</body>
+</html>
